@@ -78,6 +78,29 @@ int8_t Timer::oscillate(uint8_t pin, unsigned long period, uint8_t startingValue
 	return oscillate(pin, period, startingValue, -1); // forever
 }
 
+int8_t Timer::cycle(uint8_t pin, unsigned long up, unsigned long down, uint8_t startingValue, int repeatCount, void (*callback)(void))
+{
+	int8_t i = findFreeEventIndex();
+	if (i == NO_TIMER_AVAILABLE) return NO_TIMER_AVAILABLE;
+
+	_events[i].eventType = EVENT_CYCLE;
+	_events[i].pin = pin;
+	_events[i].period = up; // up time
+	_events[i].down = down; // down time
+	_events[i].pinState = startingValue;
+	digitalWrite(pin, startingValue);
+	_events[i].repeatCount = repeatCount * 2; // full cycles not transitions
+	_events[i].lastEventTime = millis();
+	_events[i].count = 0;
+	_events[i].callback = callback;
+	return i;
+}
+
+int8_t Timer::cycle(uint8_t pin, unsigned long up, unsigned long down, uint8_t startingValue)
+{
+	return cycle(pin, up, down, startingValue, -1); // forever
+}
+
 /**
  * This method will generate a pulse of !startingValue, occuring period after the
  * call of this method and lasting for period. The Pin will be left in !startingValue.

@@ -42,6 +42,18 @@ public:
   int8_t after(unsigned long duration, void (*callback)(void));
   int8_t oscillate(uint8_t pin, unsigned long period, uint8_t startingValue);
   int8_t oscillate(uint8_t pin, unsigned long period, uint8_t startingValue, int repeatCount);
+
+  /**
+ * By Brian Carlsen
+ * 
+ * This method creates a duty cycle timer, with optional callback. 
+ * <pin> will output <startingValue> for <up> milliseconds, 
+ * then !<startingValue> for <down> mlliseconds. 
+ * If <count> is given, the process will terminate after that many reptitions,
+ * and call <callback>. 
+ */
+  int8_t cycle( uint8_t pin, unsigned long up, unsigned long down, uint8_t startingValue );
+  int8_t cycle( uint8_t pin, unsigned long up, unsigned long down, uint8_t startingValue, int repeatCount, void (*callback)(void) = NULL); 
   
   /**
    * This method will generate a pulse of !startingValue, occuring period after the

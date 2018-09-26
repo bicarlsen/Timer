@@ -28,6 +28,7 @@
 #define EVENT_NONE 0
 #define EVENT_EVERY 1
 #define EVENT_OSCILLATE 2
+#define EVENT_CYCLE 3
 
 class Event
 {
@@ -38,6 +39,7 @@ public:
   void update(unsigned long now);
   int8_t eventType;
   unsigned long period;
+  unsigned long down;
   int repeatCount;
   uint8_t pin;
   uint8_t pinState;

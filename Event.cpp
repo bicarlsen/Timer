@@ -42,7 +42,12 @@ void Event::update(void)
 
 void Event::update(unsigned long now)
 {
-	if (now - lastEventTime >= period)
+	long trigger = period;
+	if (eventType == EVENT_CYCLE && !pinState) {
+		trigger = down;
+	}
+
+	if (now - lastEventTime >= trigger )
 	{
 		switch (eventType)
 		{
@@ -51,6 +56,7 @@ void Event::update(unsigned long now)
 				break;
 
 			case EVENT_OSCILLATE:
+			case EVENT_CYCLE:
 				pinState = ! pinState;
 				digitalWrite(pin, pinState);
 				break;
@@ -58,8 +64,13 @@ void Event::update(unsigned long now)
 		lastEventTime = now;
 		count++;
 	}
+	
 	if (repeatCount > -1 && count >= repeatCount)
 	{
+		if (eventType == EVENT_OSCILLATE || eventType == EVENT_CYCLE) {
+			if (callback != NULL) (*callback)();
+		}
+
 		eventType = EVENT_NONE;
 	}
 }
